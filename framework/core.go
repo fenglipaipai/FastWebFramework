@@ -21,8 +21,7 @@ func NewCore() *Core {
 	return &Core{router: router}
 }
 func (c *Core) Group(prefix string) IGroup {
-	return NewGr192.168.9.15192.168.9.15480005
-	480005oup(c, prefix)
+	return NewGroup(c, prefix)
 }
 
 // http method wrap
