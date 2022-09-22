@@ -1,14 +1,20 @@
-package FastWebFramework
+package main
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 import "github.com/fenglipaipai/FastWebFramework/framework"
 
 func main() {
+	core := framework.NewCore()
+	registerRouters(core)
 	server := &http.Server{
 		//请求核心处理函数
-		Handler: framework.NewCore(),
+		Handler: core,
 		Addr:    ":8080",
 	}
-	server.ListenAndServe()
+	fmt.Println("server is running.....")
 
+	server.ListenAndServe()
 }
