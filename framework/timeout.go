@@ -8,11 +8,13 @@ import (
 )
 
 func TimeoutHandler(fun ControllerHandler, d time.Duration) ControllerHandler {
-	//函数回调
+	// 使用函数回调
 	return func(c *Context) error {
+
 		finish := make(chan struct{}, 1)
 		panicChan := make(chan interface{}, 1)
-		//执行业务逻辑前预操作： 初始化超时 context
+
+		// 执行业务逻辑前预操作：初始化超时 context
 		durationCtx, cancel := context.WithTimeout(c.BaseContext(), d)
 		defer cancel()
 
@@ -24,11 +26,12 @@ func TimeoutHandler(fun ControllerHandler, d time.Duration) ControllerHandler {
 					panicChan <- p
 				}
 			}()
-			//执行具体业务逻辑
+			// 执行具体的业务逻辑
 			fun(c)
+
 			finish <- struct{}{}
 		}()
-		//执行业务逻辑后操作
+		// 执行业务逻辑后操作
 		select {
 		case p := <-panicChan:
 			log.Println(p)
@@ -39,7 +42,6 @@ func TimeoutHandler(fun ControllerHandler, d time.Duration) ControllerHandler {
 			c.SetHasTimeout()
 			c.responseWriter.Write([]byte("time out"))
 		}
-
 		return nil
 	}
 }
